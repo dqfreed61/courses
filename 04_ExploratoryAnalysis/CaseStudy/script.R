@@ -8,11 +8,11 @@
 pm0 <- read.table("RD_501_88101_1999-0.txt", comment.char = "#", header = FALSE, sep = "|", na.strings = "")
 dim(pm0)
 head(pm0)
-cnames <- readLines("RD_501_88101_1999-0.txt", 1)
+cnames <- readLines("RD_501_88101_1999-0.txt", 1)  ## this get the columns headings from first line
 print(cnames)
-cnames <- strsplit(cnames, "|", fixed = TRUE)
+cnames <- strsplit(cnames, "|", fixed = TRUE)  ## split cnames by the seperator character |
 print(cnames)
-names(pm0) <- make.names(cnames[[1]])
+names(pm0) <- make.names(cnames[[1]])  ## assigns names to columns
 head(pm0)
 x0 <- pm0$Sample.Value
 class(x0)
@@ -26,12 +26,13 @@ pm1 <- read.table("RD_501_88101_2012-0.txt", comment.char = "#", header = FALSE,
 names(pm1) <- make.names(cnames[[1]])
 head(pm1)
 dim(pm1)
+object.size(pm1)
 x1 <- pm1$Sample.Value
 class(x1)
 
 ## Five number summaries for both periods
-summary(x1)
-summary(x0)
+summary(x1)  ## x1 is 2012 values
+summary(x0)  ## x0 is 1999 values
 mean(is.na(x1))  ## Are missing values important here?
 
 ## Make a boxplot of both 1999 and 2012
@@ -40,26 +41,27 @@ boxplot(log10(x0), log10(x1))
 
 ## Check negative values in 'x1'
 summary(x1)
-negative <- x1 < 0
-sum(negative, na.rm = T)
+negative <- x1 < 0  ## this is a vector of TRUE/FALSE values
+sum(negative, na.rm = T) ## this is the sum of the TRUE values
 mean(negative, na.rm = T)
 dates <- pm1$Date
 str(dates)
-dates <- as.Date(as.character(dates), "%Y%m%d")
+dates <- as.Date(as.character(dates), "%Y%m%d") ## convert numeric date to dates
 str(dates)
 hist(dates, "month")  ## Check what's going on in months 1--6
 
+hist(dates[negative], "month")
 
 ## Plot a subset for one monitor at both times
 
 ## Find a monitor for New York State that exists in both datasets
 site0 <- unique(subset(pm0, State.Code == 36, c(County.Code, Site.ID)))
 site1 <- unique(subset(pm1, State.Code == 36, c(County.Code, Site.ID)))
-site0 <- paste(site0[,1], site0[,2], sep = ".")
+site0 <- paste(site0[,1], site0[,2], sep = ".") ## combine county code and site id seperater with a period
 site1 <- paste(site1[,1], site1[,2], sep = ".")
 str(site0)
 str(site1)
-both <- intersect(site0, site1)
+both <- intersect(site0, site1) ## find data in both datasets
 print(both)
 
 ## Find how many observations available at each monitor
